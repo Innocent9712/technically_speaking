@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev & npx trigger.dev@3.0.0-beta.52 dev",
+    "dev:next": "next dev",
+    "dev:trigger": "npx trigger.dev@3.0.0-beta.52 dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "docker-up": "docker-compose up -d --build",
+    "docker-down": "docker-compose down",
     "prisma:dev": "dotenv -e .env.local --  prisma generate --schema prisma/postgres/schema.prisma & prisma generate --schema prisma/mongo/schema.prisma",
     "prisma:prod": "prisma generate --schema prisma/postgres/schema.prisma & prisma generate --schema prisma/mongo/schema.prisma",
     "prisma:migrate:postgres:dev": "dotenv -e .env.local -- prisma migrate dev --schema prisma/postgres/schema.prisma",
@@ -17,20 +21,28 @@
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.3.6",
     "@prisma/client": "^5.17.0",
+    "@trigger.dev/nextjs": "3.0.0-beta.52",
+    "@trigger.dev/react": "3.0.0-beta.52",
+    "@trigger.dev/sdk": "3.0.0-beta.52",
     "dotenv": "^16.4.5",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "trigger.dev": "^3.0.0-beta.52"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^8.2.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
     "prisma": "^5.17.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "trigger.dev": {
+    "endpointId": "technically-speaking-Zqtj"
   }
 }
