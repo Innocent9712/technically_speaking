@@ -8,6 +8,7 @@ interface Props {
   icon?: ReactNode;
 }
 
+// eslint-disable-next-line react/display-name
 export const Button = forwardRef<
   HTMLButtonElement,
   ComponentProps<"button"> & Props

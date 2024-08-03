@@ -8,6 +8,7 @@ export type Props = RadixTooltip.TooltipProps &
     content: ReactNode;
   };
 
+// eslint-disable-next-line react/display-name
 export const Tooltip = forwardRef<HTMLDivElement, Props>(
   (
     {
