@@ -15,7 +15,6 @@ export function ToolbarMedia({ editor }: Props) {
     if (!url.length) {
       return;
     }
-
     editor.chain().setImage({ src: url }).run();
   }
 
@@ -23,7 +22,6 @@ export function ToolbarMedia({ editor }: Props) {
     if (!url.length) {
       return;
     }
-
     editor.chain().setYoutubeVideo({ src: url }).run();
   }
 
@@ -52,9 +50,7 @@ export function ToolbarMedia({ editor }: Props) {
         </Button>
       </Popover>
 
-      <Popover
-        content={<MediaPopover variant="youtube" onSubmit={addYouTube} />}
-      >
+      <Popover content={<MediaPopover variant="youtube" onSubmit={addYouTube} />}>
         <Button
           className={styles.toolbarButton}
           variant="subtle"
@@ -76,24 +72,56 @@ type MediaPopoverProps = {
 
 function MediaPopover({ variant, onSubmit }: MediaPopoverProps) {
   const [value, setValue] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setValue(reader.result as string); // Set the Base64 string
+        }
+      };
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (file) {
+      // If a file is selected, use the Base64 string
+      onSubmit(value);
+    } else {
+      // Otherwise, use the URL input
+      onSubmit(value);
+    }
+    setValue(""); // Reset input
+    setFile(null); // Reset file
+  };
 
   return (
-    <form
-      className={styles.toolbarPopover}
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(value);
-      }}
-    >
+    <form className={styles.toolbarPopover} onSubmit={handleSubmit}>
       <label className={styles.toolbarPopoverLabel} htmlFor="">
-        Add {variant === "image" ? "image" : "YouTube"} URL
+        Add {variant === "image" ? "image" : "YouTube"} URL {variant === "image" ? "or Upload Image" : ""}
       </label>
       <div className={styles.toolbarPopoverBar}>
-        <Input
-          className={styles.toolbarPopoverInput}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
+        {variant === "image" && (
+          
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className={styles.toolbarPopoverInput}
+            />
+            )}
+            <Input
+              className={styles.toolbarPopoverInput}
+              placeholder={variant === "image" ? "Or paste image URL" : "Paste YouTube URL"}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
         <Button className={styles.toolbarPopoverButton}>
           Add {variant === "image" ? "image" : "video"}
         </Button>
