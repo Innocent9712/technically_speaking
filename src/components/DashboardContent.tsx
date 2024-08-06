@@ -1,4 +1,5 @@
-export function DashboardContent ({project}: {project: string}) {
+export function DashboardContent (props: Readonly<{project: number}>) {
+    const {project} = props;
     return (
         <div>
             <h1>Dashboard Content</h1>
@@ -6,3 +7,4 @@ export function DashboardContent ({project}: {project: string}) {
         </div>
     )
 }
+

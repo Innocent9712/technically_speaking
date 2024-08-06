@@ -1,6 +1,5 @@
 import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 import { dbMongo, dbPostgres } from "../../../../prisma";
-import { Prisma as MongoPrisma } from "@prisma/mongoclient";
 import { CreateCampaignPrompt } from "@/components/CreateCampaignPrompt";
 import { DashboardContent } from "@/components/DashboardContent";
 
@@ -10,14 +9,14 @@ export default async function Dashboard() {
   let userExtra;
 
   if (user) {
-    const dbUser = dbPostgres.user.findUnique({
+    const dbUser = await dbPostgres.user.findUnique({
       where: {
         id: user?.id
       }
     })
 
     if (!dbUser) {
-      const newUser = await fetch("/api/auth/users", {
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/users`, {
         method: "POST",
         headers: {
           'Content-Type':'application/json'
@@ -39,10 +38,10 @@ export default async function Dashboard() {
   }
 
   return (
-    <main>
+    <>
       {
-        userExtra && userExtra?.currentProject && <DashboardContent project={userExtra?.currentProject} /> || <CreateCampaignPrompt />
+        userExtra?.currentProject ? <DashboardContent project={userExtra.currentProject} /> : <CreateCampaignPrompt />
       }
-    </main>
+    </>
   );
 }
