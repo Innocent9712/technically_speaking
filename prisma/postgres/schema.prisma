@@ -15,7 +15,109 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id                          String                        @id @unique
+  email                       String                        @unique
+  first_name                  String
+  last_name                   String
+  Project                     Project[]
+  User_Project_Role           User_Project_Role[]
+  User_Project_Step_Role      User_Project_Step_Role[]
+  User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+  userExtras                  String?
+}
+
+model Project {
+  id                          Int                           @id @default(autoincrement())
+  title                       String                        @unique
+  owner                       User                          @relation(fields: [ownerId], references: [id])
+  ownerId                     String
+  members                     User_Project_Role[]
+  Task                        Task[]
+  Step                        Step[]
+  User_Project_Step_Role      User_Project_Step_Role[]
+  User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+}
+
+model Role {
+  id                          Int                           @id @default(autoincrement())
+  title                       String                        @unique
+  User_Project_Role           User_Project_Role[]
+  User_Project_Step_Role      User_Project_Step_Role[]
+  User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+}
+
+model User_Project_Role {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  Int
+  role       Role     @relation(fields: [roleId], references: [id])
+  roleId     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model User_Project_Step_Role {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  Int
+  step       Step     @relation(fields: [stepId], references: [id])
+  stepId     Int
+  role       Role     @relation(fields: [roleId], references: [id])
+  roleId     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model User_Project_Step_Task_Role {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  Int
+  step       Step     @relation(fields: [stepId], references: [id])
+  stepId     Int
+  task       Task     @relation(fields: [taskId], references: [id])
+  taskId     Int
+  role       Role     @relation(fields: [roleId], references: [id])
+  roleId     Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Step {
+  id                          Int                           @id @default(autoincrement())
+  title                       String                        @unique
+  project                     Project                       @relation(fields: [projectId], references: [id])
+  projectId                   Int
+  status                      String
+  completed                   Boolean                       @default(false)
+  Task                        Task[]
+  User_Project_Step_Role      User_Project_Step_Role[]
+  User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+}
+
+model Task {
+  id                          Int                           @id @default(autoincrement())
+  title                       String                        @unique
+  project                     Project                       @relation(fields: [projectId], references: [id])
+  projectId                   Int
+  status                      String
+  completed                   Boolean                       @default(false)
+  step                        Step                          @relation(fields: [stepId], references: [id])
+  stepId                      Int
+  User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
 }

@@ -16,7 +16,8 @@
     "prisma:migrate:postgres:dev": "dotenv -e .env.local -- prisma migrate dev --schema prisma/postgres/schema.prisma",
     "prisma:migrate:postgres:prod": "prisma migrate dev --schema prisma/postgres/schema.prisma",
     "prisma:migrate:mongo:dev": "dotenv -e .env.local -- prisma migrate dev --schema prisma/mongo/schema.prisma",
-    "prisma:migrate:mongo:prod": "prisma migrate dev --schema prisma/mongo/schema.prisma"
+    "prisma:migrate:mongo:prod": "prisma migrate dev --schema prisma/mongo/schema.prisma",
+    "postbuild": "node ./scripts/add-urls-to-kinde.js"
   },
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.3.6",
