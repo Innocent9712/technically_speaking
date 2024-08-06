@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../node_modules/@prisma/postgresclient"
+  output   = "./postgresclient"
 }
 
 datasource db {
@@ -30,7 +30,8 @@ model User {
 
 model Project {
   id                          Int                           @id @default(autoincrement())
-  title                       String                        @unique
+  title                       String
+  description                 String
   owner                       User                          @relation(fields: [ownerId], references: [id])
   ownerId                     String
   members                     User_Project_Role[]
@@ -38,6 +39,9 @@ model Project {
   Step                        Step[]
   User_Project_Step_Role      User_Project_Step_Role[]
   User_Project_Step_Task_Role User_Project_Step_Task_Role[]
+  proposedStartDate           DateTime
+  contentDueDate              DateTime
+  eventDate                   DateTime
   created_at                  DateTime                      @default(now())
   updated_at                  DateTime                      @updatedAt
 }

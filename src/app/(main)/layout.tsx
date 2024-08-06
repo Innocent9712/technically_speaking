@@ -2,13 +2,22 @@ import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import Image from "next/image";
 import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
+import { dbMongo } from "../../../prisma";
+import Link from "next/link";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let hasProject = false
   const {getUser} = getKindeServerSession();
   const user = await getUser();
+  
+  if (user) {
+    const userExtras = await dbMongo.userExtras.findUnique({where: {userId: user.id}});
+    hasProject = Boolean(userExtras?.currentProject);
+  }
   return (
     <html lang="en">
       <body>
@@ -31,7 +40,20 @@ export default async function RootLayout({
             }
           </div>
         </header>
-        {children}
+        <main className="flex relative">
+          <aside className={`sticky top-0 left-0 h-screen ${hasProject ? "w-[200px]" : "w-0"} bg-[#E5E5E569] overflow-y-auto`}>
+            {
+              hasProject &&
+                <>
+                  <Link href="/dashboard" className="block p-4 hover:bg-[#b1b1b169]">Dashboard</Link>
+                  <Link href="/projects" className="block p-4 hover:bg-[#b1b1b169]">Projects</Link>
+                </>
+            }
+          </aside>
+          <div className={`${hasProject ?"pl-[200px]" : ""}`}>
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );
